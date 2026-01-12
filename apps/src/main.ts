@@ -1,11 +1,11 @@
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
 import { ConfigService } from "@nestjs/config";
 import { version, description } from 'package.json';
 import { DocumentBuilder, OpenAPIObject, SwaggerModule } from "@nestjs/swagger";
+import { AppModule } from './app.module';
 
 async function bootstrap() {
-	const app = await NestFactory.create(AppModule)
+	const app = await NestFactory.create(AppModule);
 
 	const configService = app.get(ConfigService);
 
@@ -18,7 +18,8 @@ async function bootstrap() {
 	const swaggerApiDocument: OpenAPIObject = SwaggerModule.createDocument(app, swaggerApiOptions);
 	SwaggerModule.setup('api/docs', app, swaggerApiDocument);
 
-	await app.listen(configService.get('PORT'));
+	const port = configService.get<number>('PORT_BACKEND');
+	await app.listen(port);
 }
 
 bootstrap();

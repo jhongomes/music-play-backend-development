@@ -17,7 +17,7 @@ services:
         image: redis:5.0.5
         container_name: music-play-redis-5.0.5
         ports:
-            - '6379:6379'
+            - '6380:6380'
 
     rabbitmq:
         image: rabbitmq:3.11-management

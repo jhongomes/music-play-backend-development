@@ -1,19 +1,20 @@
+import * as bcrypt from 'bcrypt';
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { DataSource, MongoRepository } from "typeorm";
-import { UserEntity } from "../entity/user.entity";
+import { User } from "../entity/user.entity";
 import { CreateNewUserDto } from "lib/src/dto/apps/user/create-new-user.dto";
 import { ExceptionObjectDto } from "lib/src/general/exceptions-object.dto";
 import { InjectDataSource } from "@nestjs/typeorm";
 
 @Injectable()
 export class UserRepository {
-    private readonly repository: MongoRepository<UserEntity>;
+    private readonly repository: MongoRepository<User>;
 
     constructor(@InjectDataSource() private readonly dataSource: DataSource) {
-        this.repository = this.dataSource.getMongoRepository(UserEntity);
+        this.repository = this.dataSource.getMongoRepository(User);
     }
 
-    async createUser(data: CreateNewUserDto) {
+    async createUser(data: CreateNewUserDto): Promise<object> {
         const currentUserStored = await this.repository.findOne({ where: { email: data.email } });
 
         if (currentUserStored)
@@ -25,27 +26,24 @@ export class UserRepository {
                 HttpStatus.BAD_REQUEST
             );
 
-        const insertResult = await this.repository.insert({
+        const user = new User();
+        user.salt = await bcrypt.genSalt();
+        user.password = await this.hashPassword(data.password, user.salt);
+
+        const insertResult = await this.repository.insertOne({
             name: data.name,
             email: data.email,
-            password: data.password,
-            account_type: (data.account_type as any) as string,
+            password: user.password,
+            salt: user.salt,
+            account_type: data.account_type,
             create_date: Date.now(),
             create_time: Date.now()
         });
 
-        if (!insertResult)
-            throw new HttpException(
-                ExceptionObjectDto.generate(
-                    HttpStatus.INTERNAL_SERVER_ERROR,
-                    `An error occurred to create the user [${data.email}]`
-                ),
-                HttpStatus.INTERNAL_SERVER_ERROR
-            );
+        return insertResult;
+    }
 
-        return {
-            email: data.email,
-            name: data.name
-        }
+    async hashPassword(password: string, salt: string): Promise<string> {
+        return bcrypt.hash(password, salt);
     }
 } 

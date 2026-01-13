@@ -1,8 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { BaseEntity, Column, Entity, Index, ObjectIdColumn } from "typeorm";
-
+import { BaseEntity, Column, Entity, Index, ObjectIdColumn, Unique } from "typeorm";
+import * as bcrypt from 'bcrypt';
 @Entity()
-export class UserEntity extends BaseEntity{
+export class User extends BaseEntity{
     @ApiProperty({ type: 'string', required: true })
     @ObjectIdColumn()
     _id: string;
@@ -31,4 +31,7 @@ export class UserEntity extends BaseEntity{
 	@ApiProperty({ type: 'number' })
 	@Column()
 	create_time: number;
+
+    @Column({ nullable: false })
+	salt: string;
 }

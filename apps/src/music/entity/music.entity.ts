@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { BaseEntity, Column, Entity, Index, ObjectIdColumn } from "typeorm";
 
 @Entity()
-export class MusicEntity extends BaseEntity {
+export class Music extends BaseEntity {
     @ApiProperty({ type: 'string', required: true })
     @ObjectIdColumn()
     _id: string;

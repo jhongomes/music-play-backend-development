@@ -2,11 +2,12 @@ import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { UserRepository } from "./repository/user.repository";
 import { CreateNewUserDto } from "lib/src/dto/apps/user/create-new-user.dto";
 import { ExceptionObjectDto } from "lib/src/general/exceptions-object.dto";
+import { ResponseTypeDto } from "lib/src/general";
 
 @Injectable()
 export class UserService {
-   constructor(private readonly userRepository: UserRepository) {}
-   async createUser(data: CreateNewUserDto): Promise<void> {
+   constructor(private readonly userRepository: UserRepository) { }
+   async createUser(data: CreateNewUserDto): Promise<ResponseTypeDto> {
       const userCreated = await this.userRepository.createUser(data);
 
       if (!userCreated)
@@ -18,9 +19,11 @@ export class UserService {
             HttpStatus.INTERNAL_SERVER_ERROR
          );
 
-      Logger.log(
-         `User [${data.email}] - [${data.name}] was successfully created`,
-         'CreateUser'
-      );
+      Logger.log(`User [${data.email}] - [${data.name}] was successfully created`, 'CreateNewUser' );
+
+      return {
+         statusCode: HttpStatus.CREATED,
+         message: 'User created successfully'
+      };
    }
 } 

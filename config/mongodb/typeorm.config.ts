@@ -2,7 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from "@nestjs/typeorm";
 import { MongodbConfig } from "./mongodb.config";
 import { TypeormEntityConfig } from "./typeorm.entity.config";
-import { Entitie } from "lib/enum/entities.enum";
+import { Entitie } from "lib/src/enum/entities.enum";
+
 
 @Injectable()
 export class TypeOrmConfig implements TypeOrmOptionsFactory {

@@ -5,6 +5,7 @@ import { User } from "../entity/user.entity";
 import { CreateNewUserDto } from "lib/src/dto/apps/user/create-new-user.dto";
 import { ExceptionObjectDto } from "lib/src/general/exceptions-object.dto";
 import { InjectDataSource } from "@nestjs/typeorm";
+import { UserCredentialsDto } from 'lib/src/dto/apps/user';
 
 @Injectable()
 export class UserRepository {
@@ -15,7 +16,7 @@ export class UserRepository {
     }
 
     async createUser(data: CreateNewUserDto): Promise<object> {
-        const currentUserStored = await this.repository.findOne({ where: { email: data.email } });
+        const currentUserStored = await this.findByEmail(data.email);
 
         if (currentUserStored)
             throw new HttpException(
@@ -42,6 +43,22 @@ export class UserRepository {
 
         return insertResult;
     }
+
+    async findByEmail(email: string): Promise<User | null> {
+        return await this.repository.findOne({ where: { email: email } });
+    }
+
+    async validatePassword(userCredentialsDto: UserCredentialsDto): Promise<string | null> {
+		const { email, password } = userCredentialsDto;
+
+		const user = await this.repository.findOne({ where: { email: email } });
+
+		if (user && (await user.validatePassword(password))) {
+			return user.email;
+		}
+
+		return null;
+	}
 
     async hashPassword(password: string, salt: string): Promise<string> {
         return bcrypt.hash(password, salt);

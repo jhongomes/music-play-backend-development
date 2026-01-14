@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import { NestFactory } from "@nestjs/core";
 import { ConfigService } from "@nestjs/config";
 import { version, description } from 'package.json';

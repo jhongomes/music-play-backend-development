@@ -1,4 +1,5 @@
 export enum Repository {
     USER = 'user',
-    MUSIC = 'music'
+    MUSIC = 'music',
+    PROFILE = 'profile'
 }

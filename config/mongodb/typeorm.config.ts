@@ -21,7 +21,8 @@ export class TypeOrmConfig implements TypeOrmOptionsFactory {
             logging: true,
             entities: [
                 ...TypeormEntityConfig.getEntitiesOf(Entitie.USER),
-                ...TypeormEntityConfig.getEntitiesOf(Entitie.MUSIC)
+                ...TypeormEntityConfig.getEntitiesOf(Entitie.MUSIC),
+                ...TypeormEntityConfig.getEntitiesOf(Entitie.PROFILE)
             ]
         };
     }

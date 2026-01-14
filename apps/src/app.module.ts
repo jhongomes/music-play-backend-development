@@ -4,13 +4,15 @@ import { TypeOrmConfig } from 'config';
 import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { ProfileModule } from './profile/profile.module';
 @Global()
 @Module({
     imports: [
         ConfigModule.forRoot(),
         TypeOrmModule.forRootAsync({ useClass: TypeOrmConfig }),
         UserModule,
-        AuthModule
+        AuthModule,
+        ProfileModule
     ],
     exports: [AuthModule, ConfigModule],
     providers: [],

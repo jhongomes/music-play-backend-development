@@ -6,6 +6,7 @@ import { CreateNewUserDto } from "lib/src/dto/apps/user/create-new-user.dto";
 import { ExceptionObjectDto } from "lib/src/general/exceptions-object.dto";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { UserCredentialsDto } from 'lib/src/dto/apps/user';
+import { InsertOneResult } from 'mongodb';
 
 @Injectable()
 export class UserRepository {
@@ -15,7 +16,7 @@ export class UserRepository {
         this.repository = this.dataSource.getMongoRepository(User);
     }
 
-    async createUser(data: CreateNewUserDto): Promise<object> {
+    async createUser(data: CreateNewUserDto): Promise<InsertOneResult> {
         const currentUserStored = await this.findByEmail(data.email);
 
         if (currentUserStored)
@@ -37,8 +38,8 @@ export class UserRepository {
             password: user.password,
             salt: user.salt,
             account_type: data.account_type,
-            create_date: Date.now(),
-            create_time: Date.now()
+            created_at: Date.now(),
+            updated_at: Date.now()
         });
 
         return insertResult;

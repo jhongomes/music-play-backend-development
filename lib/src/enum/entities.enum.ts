@@ -2,5 +2,6 @@ export enum Entitie {
     USER = 'user',
     MUSIC = 'music',
     PROFILE = 'profile',
-    ALBUM = 'album'
+    ALBUM = 'album',
+    ARTIST = 'artist'
 }

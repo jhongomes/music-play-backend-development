@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { AlbumModule } from './album/album.module';
+import { ArtistModule } from './artist/artist.module';
 @Global()
 @Module({
     imports: [
@@ -14,7 +15,8 @@ import { AlbumModule } from './album/album.module';
         UserModule,
         AuthModule,
         ProfileModule,
-        AlbumModule
+        AlbumModule,
+        ArtistModule
     ],
     exports: [AuthModule, ConfigModule],
     providers: [],

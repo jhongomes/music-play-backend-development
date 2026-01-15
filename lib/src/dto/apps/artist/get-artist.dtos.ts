@@ -1,0 +1,35 @@
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { LimitMinMax, PageMin } from "lib/src/general/page-limit-validation";
+
+export class GetArtistDto {
+	@ApiProperty({ type: 'string', default: 1, minimum: 1, required: false })
+	@IsOptional()
+	@IsNotEmpty()
+	@PageMin(1, { message: 'page must be greater or equal to 1' })
+	page = 1;
+
+	@ApiProperty({ type: 'string', default: 10, minimum: 1, maximum: 50, required: false })
+	@IsOptional()
+	@IsNotEmpty()
+	@LimitMinMax(1, 50, { message: 'limit must be greater or equal to 1 and lower or equal to 50' })
+	limit = 10;
+
+	@ApiProperty({ type: 'string', required: false })
+	@IsString()
+	@IsOptional()
+	@IsNotEmpty()
+	name: string;
+
+	@ApiProperty({ type: 'string', required: false })
+	@IsString()
+	@IsOptional()
+	@IsNotEmpty()
+	created_at: number;
+
+	@ApiProperty({ type: 'string', required: false })
+	@IsString()
+	@IsOptional()
+	@IsNotEmpty()
+	updated_at: number;
+}

@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { CreateArtistDto } from "lib/src/dto/apps/artist/create-artist.dto";
 import { ArtistRepository } from "./repository/artist.repository";
 import { ResponseTypeDto } from "lib/src/general";
+import { ResponseGetArtistDto } from "lib/src/dto/apps/artist/response-get-album.dto";
+import { GetArtistDto } from "lib/src/dto/apps/artist/get-artist.dtos";
 
 @Injectable()
 export class ArtistService {
@@ -30,5 +32,9 @@ export class ArtistService {
             statusCode: HttpStatus.CREATED,
             message: 'Artist was successfully created'
         };
+    }
+
+    async getArtist(query: GetArtistDto): Promise<ResponseGetArtistDto> {
+        return this.artistRepository.getArtist(query);
     }
 }

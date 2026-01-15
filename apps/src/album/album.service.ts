@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { AlbumRepository } from "./repository/album.repository";
 import { ExceptionObjectDto, ResponseTypeDto } from "lib/src/general";
 import { CreateAlbumDto } from "lib/src/dto/apps/album/album.dto";
+import { GetAlbumDto } from "lib/src/dto/apps/album/get-album.dtos";
+import { ResponseGetAlbumDto } from "lib/src/dto/apps/album/response-get-album.dto";
 
 @Injectable()
 export class AlbumService {
@@ -25,5 +27,9 @@ export class AlbumService {
             statusCode: HttpStatus.CREATED,
             message: 'Album was successfully created'
         };
+    }
+
+    async getAlbums(query: GetAlbumDto): Promise<ResponseGetAlbumDto> {
+        return this.albumRepository.getAlbums(query);
     }
 }

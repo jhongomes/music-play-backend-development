@@ -21,13 +21,13 @@ export class GetArtistDto {
 	@IsNotEmpty()
 	name: string;
 
-	@ApiProperty({ type: 'string', required: false })
+	@ApiProperty({ type: 'number', required: false })
 	@IsString()
 	@IsOptional()
 	@IsNotEmpty()
 	created_at: number;
 
-	@ApiProperty({ type: 'string', required: false })
+	@ApiProperty({ type: 'number', required: false })
 	@IsString()
 	@IsOptional()
 	@IsNotEmpty()

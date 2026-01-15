@@ -4,7 +4,6 @@ import { MongodbConfig } from "./mongodb.config";
 import { TypeormEntityConfig } from "./typeorm.entity.config";
 import { Entitie } from "lib/src/enum/entities.enum";
 
-
 @Injectable()
 export class TypeOrmConfig implements TypeOrmOptionsFactory {
     private mongoConfig: MongodbConfig;
@@ -23,7 +22,8 @@ export class TypeOrmConfig implements TypeOrmOptionsFactory {
                 ...TypeormEntityConfig.getEntitiesOf(Entitie.USER),
                 ...TypeormEntityConfig.getEntitiesOf(Entitie.MUSIC),
                 ...TypeormEntityConfig.getEntitiesOf(Entitie.PROFILE),
-                ...TypeormEntityConfig.getEntitiesOf(Entitie.ALBUM)
+                ...TypeormEntityConfig.getEntitiesOf(Entitie.ALBUM),
+                ...TypeormEntityConfig.getEntitiesOf(Entitie.ARTIST)
             ]
         };
     }

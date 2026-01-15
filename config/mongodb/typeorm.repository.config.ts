@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { Repository } from 'lib/src/enum/repositories.enum';
 import { UserRepository } from 'apps/src/user/repository/user.repository';
 import { ProfileRepository } from 'apps/src/profile/repository/profile.repository';
+import { AlbumRepository } from 'apps/src/album/repository/album.repository';
 
 @Injectable()
 export class TypeOrmRepositoryConfig {
@@ -10,6 +11,7 @@ export class TypeOrmRepositoryConfig {
         const repositoriesOf = {
             [Repository.USER]: () => [UserRepository],
             [Repository.PROFILE]: () => [ProfileRepository],
+            [Repository.ALBUM]: () => [AlbumRepository],
             [Repository.MUSIC]: () => []
         }
 

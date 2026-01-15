@@ -5,6 +5,7 @@ import { UserModule } from './user/user.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
+import { AlbumModule } from './album/album.module';
 @Global()
 @Module({
     imports: [
@@ -12,7 +13,8 @@ import { ProfileModule } from './profile/profile.module';
         TypeOrmModule.forRootAsync({ useClass: TypeOrmConfig }),
         UserModule,
         AuthModule,
-        ProfileModule
+        ProfileModule,
+        AlbumModule
     ],
     exports: [AuthModule, ConfigModule],
     providers: [],

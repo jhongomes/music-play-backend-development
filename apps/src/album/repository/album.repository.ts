@@ -1,7 +1,7 @@
 import { DataSource, MongoRepository } from "typeorm";
 import { Album } from "../entity/album.entity";
 import { InjectDataSource } from "@nestjs/typeorm";
-import { InsertOneResult } from "mongodb";
+import { InsertOneResult, ObjectId } from "mongodb";
 import { GetAlbumDto } from "lib/src/dto/apps/album/get-album.dtos";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { ResponseGetAlbumDto } from "lib/src/dto/apps/album/response-get-album.dto";
@@ -18,7 +18,7 @@ export class AlbumRepository {
             title: data.title,
             year_release: data.year_release,
             photo: data.photo || '',
-            artist_id: data.artist_id,
+            artist_id: new ObjectId(data.artist_id),
             created_at: Date.now(),
             updated_at: Date.now()
         });
@@ -45,7 +45,7 @@ export class AlbumRepository {
         const albums = await this.repository.aggregate([{ $match: query }, { $skip: limit * (page - 1) }, { $limit: limit }]).toArray();
 
         if (albums.length <= 0)
-            throw new HttpException('No records found with these parameters.',HttpStatus.NOT_FOUND);
+            throw new HttpException('No records found with these parameters.', HttpStatus.NOT_FOUND);
 
         return {
             albums,

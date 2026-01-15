@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { LimitMinMax, PageMin } from "lib/src/general/page-limit-validation";
 
-export class GetAlbumDto {
+export class GetArtistDto {
 	@ApiProperty({ type: 'string', default: 1, minimum: 1, required: false })
 	@IsOptional()
 	@IsNotEmpty()
@@ -19,19 +19,7 @@ export class GetAlbumDto {
 	@IsString()
 	@IsOptional()
 	@IsNotEmpty()
-	title: string;
-
-	@ApiProperty({ type: 'string', required: false })
-	@IsString()
-	@IsOptional()
-	@IsNotEmpty()
-	year_release: string;
-
-    @ApiProperty({ type: 'string', required: false })
-	@IsString()
-	@IsOptional()
-	@IsNotEmpty()
-	artist_id: string;
+	name: string;
 
 	@ApiProperty({ type: 'number', required: false })
 	@IsString()

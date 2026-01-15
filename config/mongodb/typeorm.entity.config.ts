@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { EntityClassOrSchema } from "@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type";
+import { Album } from "apps/src/album/entity/album.entity";
 import { Music } from "apps/src/music/entity/music.entity";
 import { Profile } from "apps/src/profile/entity/profile.entity";
 import { User } from "apps/src/user/entity/user.entity";
@@ -11,7 +12,8 @@ export class TypeormEntityConfig {
         const entitiesOf = {
         [Entitie.USER]: () => [User],
         [Entitie.MUSIC]: () => [Music],
-        [Entitie.PROFILE]: () => [Profile]
+        [Entitie.PROFILE]: () => [Profile],
+        [Entitie.ALBUM]: () => [Album]
         };
 
         return entitiesOf[entities]();

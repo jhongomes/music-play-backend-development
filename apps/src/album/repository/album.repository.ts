@@ -30,6 +30,10 @@ export class AlbumRepository {
         const limit = Number(query.limit);
         delete query.limit;
 
+        if (query.artist_id) {
+            query.artist_id = new ObjectId(query.artist_id);
+        }
+
         const totalFound = await this.repository.count(query);
 
         if (totalFound <= 0 || page > Math.ceil(totalFound / limit))

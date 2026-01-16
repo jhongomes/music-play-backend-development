@@ -2,10 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { BaseEntity, Column, Entity, Index, ObjectIdColumn } from "typeorm";
 
 @Entity()
-@Index(['artist_id', 'year_release', 'title'], {
-    unique: true,
-    background: true
-})
+@Index(['artist_id', 'year_release', 'title'], { background: true })
 export class Album extends BaseEntity {
     @ApiProperty({ type: 'string', required: true })
     @ObjectIdColumn()

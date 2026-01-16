@@ -23,4 +23,26 @@ export class MusicService {
             message: 'Music was successfully created'
         }
     }
+
+    async createBulkMusic(createMusicsDto: CreateMusicDto[]): Promise<ResponseTypeDto> {
+        let { bulkOperationResult, bulkOperationsExecuted } = await this.musicRepository.createBulkMusic(createMusicsDto);
+
+        if (bulkOperationsExecuted.length && (bulkOperationResult.insertedCount)) {
+            for (const music of bulkOperationsExecuted) {
+                Logger.log(
+                    `Created music [Title: ${music.title}] - Genre: ${music.genre} - Duration: [${music.duration}] process finished`,
+                    'CreateBulkMusic'
+                );
+            }
+        }
+
+        bulkOperationResult = null;
+        bulkOperationsExecuted = null;
+        createMusicsDto = null;
+
+        return {
+            statusCode: HttpStatus.CREATED,
+            message: 'Musics was successfully created'
+        }
+    }
 }

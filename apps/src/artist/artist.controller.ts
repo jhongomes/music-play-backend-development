@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Query, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiOkResponse, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiOkResponse, ApiQuery, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { CreateArtistDto } from "lib/src/dto/apps/artist/create-artist.dto";
 import { ResponseTypeDto } from "lib/src/general";
 import { Artist } from "./entity/artist.entity";
@@ -25,6 +25,7 @@ export class ArtistController {
     @ApiCreatedResponse({ type: Artist, description: 'The Artist has been successfully created.' })
     @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
     @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
     async createArtist(@Body() data: CreateArtistDto): Promise<ResponseTypeDto> {
         try {
             return this.artistService.createArtist(data);
@@ -40,6 +41,7 @@ export class ArtistController {
     @ApiCreatedResponse({ type: Artist, description: 'The Artist has been successfully created.' })
     @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
     @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
     async getArtist(@Query() query: GetArtistDto): Promise<ResponseGetArtistDto> {
         try {
             return this.artistService.getArtist(query);

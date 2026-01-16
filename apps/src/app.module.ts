@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ProfileModule } from './profile/profile.module';
 import { AlbumModule } from './album/album.module';
 import { ArtistModule } from './artist/artist.module';
+import { MusicModule } from './music/music.module';
 @Global()
 @Module({
     imports: [
@@ -16,7 +17,8 @@ import { ArtistModule } from './artist/artist.module';
         AuthModule,
         ProfileModule,
         AlbumModule,
-        ArtistModule
+        ArtistModule,
+        MusicModule
     ],
     exports: [AuthModule, ConfigModule],
     providers: [],

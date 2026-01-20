@@ -1,11 +1,14 @@
-import { Body, Controller, Post, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Post, Req, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { MusicService } from "./music.service";
 import { ResponseTypeDto } from "lib/src/general";
 import { Music } from "./entity/music.entity";
+import { Request } from 'express';
 import { CreateMusicDto } from "lib/src/dto/apps/music/create-music.dto";
 import { EmptyArrayValidationPipe } from "lib/src/pipes/empty-array.pipe";
+import { handleMultipartStream } from 'config/busboy/stream-handle.busboy';
+import { UploadAbortInterceptor } from "lib/src/interceptor/abort-upload-interceptor";
 
 @ApiTags('Music')
 @Controller('music')
@@ -31,6 +34,17 @@ export class MusicController {
         } catch (error) {
             throw error;
         }
+    }
+
+    @Post('/upload')
+    @UseInterceptors(UploadAbortInterceptor)
+    @ApiCreatedResponse({ type: ResponseTypeDto, description: 'Successfull operation, file received.' })
+    @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error occurred. A message explaining will be notified.' })
+    @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error occurred. A message explaining will be notified.' })
+    @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
+    async createFileMusic(@Req() req: Request): Promise<Object> {
+        const { stream, filename, mimetype } = await handleMultipartStream(req);
+        return this.musicService.createFileMusic(stream, filename, mimetype);
     }
 
     @Post('/bulk')

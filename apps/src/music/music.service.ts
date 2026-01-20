@@ -1,11 +1,15 @@
-import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { MusicRepository } from "./repository/music.repository";
 import { ResponseTypeDto } from "lib/src/general";
 import { CreateMusicDto } from "lib/src/dto/apps/music/create-music.dto";
-
+import { UploadService } from "config/storage/uppload-service";
+import { PassThrough } from "stream";
 @Injectable()
 export class MusicService {
-    constructor(private readonly musicRepository: MusicRepository) {}
+    constructor(
+        private readonly musicRepository: MusicRepository,
+        private readonly uploadService: UploadService
+    ) {}
 
     async createMusic(data: CreateMusicDto): Promise<ResponseTypeDto> {
         const createdMusic = await this.musicRepository.createMusic(data);
@@ -44,5 +48,12 @@ export class MusicService {
             statusCode: HttpStatus.CREATED,
             message: 'Musics was successfully created'
         }
+    }
+
+    async createFileMusic(stream: PassThrough, filename: string, mimetype: string): Promise<Object> {
+        if (!mimetype.startsWith('audio/') &&!mimetype.startsWith('video/')) {
+            throw new BadRequestException('The file must be audio or video');
+        }
+        return this.uploadService.uploadToS3(stream, filename, mimetype);
     }
 }

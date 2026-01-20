@@ -22,13 +22,13 @@ export class CreateMusicDto {
     @ApiProperty({ type: 'string', required: true })
     @IsNotEmpty()
     @IsString()
-    artist_id: string | ObjectId; 
+    artist_id: string | ObjectId;
 
     @ApiProperty({ type: 'string', required: true })
     @IsNotEmpty()
     @IsString()
     genre: string;
-    
+
     @ApiProperty({ type: 'string', required: true })
     @IsNotEmpty()
     @IsString()
@@ -37,12 +37,12 @@ export class CreateMusicDto {
     @ApiProperty({ type: 'string', required: true })
     @IsNotEmpty()
     @IsString()
-    sound_url: string; 
+    sound_url: string;
 
     @ApiProperty({ type: 'string', required: true })
     @IsNotEmpty()
     @IsString()
-    cover_art: string; 
+    cover_art: string;
 
     @ApiProperty({ type: 'number' })
     created_at: number;

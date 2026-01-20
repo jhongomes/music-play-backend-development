@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import * as dotenv from 'dotenv';
 import { PassThrough } from 'stream';
@@ -11,10 +11,7 @@ export class UploadService {
     region: process.env.AWS_REGION,
   });
 
-  async uploadToS3(
-    stream: PassThrough,
-    filename: string,
-    mimetype: string) {
+  async uploadToS3(stream: PassThrough, filename: string, mimetype: string) {
     const key = `${process.env.AWS_FOLDER}/${Date.now()}-${filename}`;
 
     const upload = new Upload({
@@ -31,9 +28,25 @@ export class UploadService {
 
     await upload.done();
 
-     return {
+    return {
       key,
       url: `https://${process.env.AWS_BUCKET}.s3.amazonaws.com/${key}`,
+    };
+  }
+
+  async getS3Media(key: string, range: string){
+    const command = new GetObjectCommand({
+      Bucket: process.env.AWS_BUCKET!,
+      Key: `${process.env.AWS_FOLDER}/${key}`,
+      Range: range
+    });
+
+    const response = await this.s3.send(command);
+
+    return {
+      stream: response.Body as NodeJS.ReadableStream,
+      contentLength: response.ContentLength,
+      contentRange: response.ContentRange,
     };
   }
 }

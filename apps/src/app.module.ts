@@ -8,11 +8,13 @@ import { ProfileModule } from './profile/profile.module';
 import { AlbumModule } from './album/album.module';
 import { ArtistModule } from './artist/artist.module';
 import { MusicModule } from './music/music.module';
+import { UploadModule } from 'config/storage/storage.module';
 @Global()
 @Module({
     imports: [
         ConfigModule.forRoot(),
         TypeOrmModule.forRootAsync({ useClass: TypeOrmConfig }),
+        UploadModule,
         UserModule,
         AuthModule,
         ProfileModule,
@@ -20,7 +22,7 @@ import { MusicModule } from './music/music.module';
         ArtistModule,
         MusicModule
     ],
-    exports: [AuthModule, ConfigModule],
+    exports: [AuthModule, ConfigModule, UploadModule],
     providers: [],
 })
 export class AppModule {}

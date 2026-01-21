@@ -46,7 +46,39 @@ export class AlbumRepository {
                 }
             };
 
-        const albums = await this.repository.aggregate([{ $match: query }, { $skip: limit * (page - 1) }, { $limit: limit }]).toArray();
+        const albums = await this.repository.aggregate([
+            { $match: query },
+            {
+                $lookup: {
+                    from: `music`,
+                    let: {
+                        album_id: '$_id'
+                    },
+                    pipeline: [
+                        {
+                            $match: {
+                                $expr: {
+                                    $eq: ['$album_id', '$$album_id']
+                                }
+                            }
+                        },
+                        {
+                            $project: {
+                                _id: 0,
+                                title: 1,
+                                artist_id: 1,
+                                album_id: 1,
+                                user_id: 1,
+                                duration: 1,
+                                genre: 1,
+                                sound_url: 1,
+                                cover_art: 1
+                            }
+                        }
+                    ],
+                    as: 'songs'
+                }
+            }, { $skip: limit * (page - 1) }, { $limit: limit }]).toArray();
 
         if (albums.length <= 0)
             throw new HttpException('No records found with these parameters.', HttpStatus.NOT_FOUND);

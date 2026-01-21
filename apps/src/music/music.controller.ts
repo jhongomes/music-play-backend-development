@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post, Req, Res, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, Req, Res, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiOkResponse, ApiQuery, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { MusicService } from "./music.service";
 import { ResponseTypeDto } from "lib/src/general";
 import { Music } from "./entity/music.entity";
@@ -9,6 +9,8 @@ import { CreateMusicDto } from "lib/src/dto/apps/music/create-music.dto";
 import { EmptyArrayValidationPipe } from "lib/src/pipes/empty-array.pipe";
 import { handleMultipartStream } from 'config/busboy/stream-handle.busboy';
 import { UploadAbortInterceptor } from "lib/src/interceptor/abort-upload-interceptor";
+import { GetMusicDto } from "lib/src/dto/apps/music/get-music.dtos";
+import { ResponseGetMusicDto } from "lib/src/dto/apps/music/response-get-music.dto";
 
 @ApiTags('Music')
 @Controller('music')
@@ -59,6 +61,17 @@ export class MusicController {
     @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
     async createBulkMusic(@Body() createMusicsDto: CreateMusicDto[]): Promise<ResponseTypeDto> {
         return this.musicService.createBulkMusic(createMusicsDto);
+    }
+
+    @Get('/all')
+    @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidUnknownValues: true }))
+    @ApiQuery({ type: GetMusicDto })
+    @ApiOkResponse({ type: ResponseGetMusicDto, description: 'Song(s) found.' })
+    @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
+    async getMusicsList(@Query() query: GetMusicDto): Promise<ResponseGetMusicDto> {
+        return this.musicService.getMusicsList(query);
     }
 
     @Get('/:id')

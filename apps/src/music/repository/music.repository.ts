@@ -3,7 +3,9 @@ import { Music } from "../entity/music.entity";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { InsertOneResult, ObjectId } from "mongodb";
 import { CreateMusicDto } from "../../../../lib/src/dto/apps/music/create-music.dto";
-import { Logger } from "@nestjs/common";
+import { HttpException, HttpStatus, Logger } from "@nestjs/common";
+import { GetMusicDto } from "lib/src/dto/apps/music/get-music.dtos";
+import { ResponseGetMusicDto } from "lib/src/dto/apps/music/response-get-music.dto";
 
 export class MusicRepository {
     private readonly repository: MongoRepository<Music>
@@ -68,5 +70,54 @@ export class MusicRepository {
 
     async getMusicById(id: string): Promise<Music | null> {
         return await this.repository.findOne({ where: { _id: new ObjectId(id) } })
+    }
+
+    async getMusicsList(query: GetMusicDto): Promise<ResponseGetMusicDto> {
+        const { page, limit, ...filters } = query;
+
+        const currentPage = Number(page);
+        const currentLimit = Number(limit);
+
+        const objectIdFields = ['artist_id', 'album_id', 'user_id'];
+
+        const mongoQuery = Object.fromEntries(
+            Object.entries(filters)
+                .filter(([, value]) => value !== undefined && value !== null)
+                .map(([key, value]) =>
+                    objectIdFields.includes(key)
+                        ? [key, new ObjectId(value)]
+                        : [key, value]
+                )
+        );
+
+        const totalFound = await this.repository.count(mongoQuery);
+
+        if (totalFound === 0 || currentPage > Math.ceil(totalFound / currentLimit)) {
+            return {
+                songs: [],
+                pagging: {
+                    page: currentPage,
+                    limit: currentLimit,
+                    totalFound
+                }
+            };
+        }
+
+        const songs = await this.repository
+            .aggregate([
+                { $match: mongoQuery },
+                { $skip: currentLimit * (currentPage - 1) },
+                { $limit: currentLimit }
+            ])
+            .toArray();
+
+        return {
+            songs,
+            pagging: {
+                page: currentPage,
+                limit: currentLimit,
+                totalFound
+            }
+        };
     }
 }

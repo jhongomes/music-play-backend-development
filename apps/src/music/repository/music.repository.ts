@@ -3,7 +3,6 @@ import { Music } from "../entity/music.entity";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { InsertOneResult, ObjectId } from "mongodb";
 import { CreateMusicDto } from "../../../../lib/src/dto/apps/music/create-music.dto";
-import { create } from "domain";
 import { Logger } from "@nestjs/common";
 
 export class MusicRepository {
@@ -65,5 +64,9 @@ export class MusicRepository {
             bulkOperationResult,
             bulkOperationsExecuted
         };
+    }
+
+    async getMusicById(id: string): Promise<Music | null> {
+        return await this.repository.findOne({ where: { _id: new ObjectId(id) } })
     }
 }

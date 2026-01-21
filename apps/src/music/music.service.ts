@@ -51,9 +51,23 @@ export class MusicService {
     }
 
     async createFileMusic(stream: PassThrough, filename: string, mimetype: string): Promise<Object> {
-        if (!mimetype.startsWith('audio/') &&!mimetype.startsWith('video/')) {
+        if (!mimetype.startsWith('audio/') && !mimetype.startsWith('video/')) {
             throw new BadRequestException('The file must be audio or video');
         }
         return this.uploadService.uploadToS3(stream, filename, mimetype);
+    }
+
+    async getMusicById(id: string, range: string): Promise<any> {
+        const foundMusic = await this.musicRepository.getMusicById(id);
+
+        if (!foundMusic) throw new BadRequestException('Music not found');
+
+        const { stream, contentLength, contentRange } = await this.uploadService.getS3Media(foundMusic.sound_url, range);
+
+        return {
+            stream,
+            contentLength,
+            contentRange
+        }
     }
 }

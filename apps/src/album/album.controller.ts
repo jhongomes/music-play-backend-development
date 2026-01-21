@@ -38,7 +38,6 @@ export class AlbumController {
     @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidUnknownValues: true }))
     @ApiQuery({ type: GetAlbumDto })
     @ApiOkResponse({ type: ResponseGetAlbumDto, description: 'Albums(s) found.' })
-    @ApiCreatedResponse({ type: Album, description: 'The Album has been successfully created.' })
     @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
     @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
     @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })

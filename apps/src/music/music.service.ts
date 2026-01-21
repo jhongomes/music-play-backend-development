@@ -4,6 +4,8 @@ import { ResponseTypeDto } from "lib/src/general";
 import { CreateMusicDto } from "lib/src/dto/apps/music/create-music.dto";
 import { UploadService } from "config/storage/uppload-service";
 import { PassThrough } from "stream";
+import { GetMusicDto } from "lib/src/dto/apps/music/get-music.dtos";
+import { ResponseGetMusicDto } from "lib/src/dto/apps/music/response-get-music.dto";
 @Injectable()
 export class MusicService {
     constructor(
@@ -69,5 +71,9 @@ export class MusicService {
             contentLength,
             contentRange
         }
+    }
+
+    async getMusicsList(query: GetMusicDto): Promise<ResponseGetMusicDto> {
+        return this.musicRepository.getMusicsList(query);
     }
 }

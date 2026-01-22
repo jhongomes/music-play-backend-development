@@ -11,6 +11,7 @@ import { handleMultipartStream } from 'config/busboy/stream-handle.busboy';
 import { UploadAbortInterceptor } from "lib/src/interceptor/abort-upload-interceptor";
 import { GetMusicDto } from "lib/src/dto/apps/music/get-music.dtos";
 import { ResponseGetMusicDto } from "lib/src/dto/apps/music/response-get-music.dto";
+import { UploadEnum } from "lib/src/enum/upload.enum";
 
 @ApiTags('Music')
 @Controller('music')
@@ -44,9 +45,9 @@ export class MusicController {
     @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error occurred. A message explaining will be notified.' })
     @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error occurred. A message explaining will be notified.' })
     @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
-    async createFileMusic(@Req() req: Request): Promise<Object> {
+    async createFileMusic(@Req() req: Request): Promise<string> {
         const { stream, filename, mimetype } = await handleMultipartStream(req);
-        return this.musicService.createFileMusic(stream, filename, mimetype);
+        return this.musicService.createFileMusic(stream, filename, mimetype, UploadEnum.MUSIC);
     }
 
     @Post('/bulk')
@@ -75,6 +76,7 @@ export class MusicController {
     }
 
     @Get('/:id')
+    @UseInterceptors(UploadAbortInterceptor)
     @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidUnknownValues: true }))
     @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
     @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })

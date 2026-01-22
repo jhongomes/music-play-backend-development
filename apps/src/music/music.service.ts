@@ -6,6 +6,8 @@ import { UploadService } from "config/storage/uppload-service";
 import { PassThrough } from "stream";
 import { GetMusicDto } from "lib/src/dto/apps/music/get-music.dtos";
 import { ResponseGetMusicDto } from "lib/src/dto/apps/music/response-get-music.dto";
+import { UploadEnum } from "lib/src/enum/upload.enum";
+
 @Injectable()
 export class MusicService {
     constructor(
@@ -52,11 +54,11 @@ export class MusicService {
         }
     }
 
-    async createFileMusic(stream: PassThrough, filename: string, mimetype: string): Promise<Object> {
+    async createFileMusic(stream: PassThrough, filename: string, mimetype: string, uploadEnum: UploadEnum): Promise<string> {
         if (!mimetype.startsWith('audio/') && !mimetype.startsWith('video/')) {
             throw new BadRequestException('The file must be audio or video');
         }
-        return this.uploadService.uploadToS3(stream, filename, mimetype);
+        return this.uploadService.uploadToS3(stream, filename, mimetype, uploadEnum);
     }
 
     async getMusicById(id: string, range: string): Promise<any> {

@@ -3,6 +3,8 @@ import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 import * as dotenv from 'dotenv';
 import { PassThrough } from 'stream';
+import { UPLOAD_PROFILES } from 'lib/src/type/upload.type';
+import { UploadEnum } from 'lib/src/enum/upload.enum';
 dotenv.config();
 
 @Injectable()
@@ -11,33 +13,32 @@ export class UploadService {
     region: process.env.AWS_REGION,
   });
 
-  async uploadToS3(stream: PassThrough, filename: string, mimetype: string) {
-    const key = `${process.env.AWS_FOLDER}/${Date.now()}-${filename}`;
+  async uploadToS3(stream: PassThrough, filename: string, mimeType: string, uploadEnum: UploadEnum): Promise<string> {
+    const profile = UPLOAD_PROFILES[uploadEnum];
+
+    const key = `${profile.folder}/${crypto.randomUUID()}-${filename}`;
 
     const upload = new Upload({
       client: this.s3,
-      queueSize: Number(process.env.AWS_QUEUE_SIZE),
-      partSize: Number(process.env.AWS_PART_SIZE),
+      queueSize: profile.queueSize,
+      partSize: profile.maxSizeMB,
       params: {
         Bucket: process.env.AWS_BUCKET!,
         Key: key,
         Body: stream,
-        ContentType: mimetype,
+        ContentType: mimeType,
       },
     });
 
     await upload.done();
 
-    return {
-      key,
-      url: `https://${process.env.AWS_BUCKET}.s3.amazonaws.com/${key}`,
-    };
+    return key;
   }
 
-  async getS3Media(key: string, range: string){
+  async getS3Media(key: string, range: string) {
     const command = new GetObjectCommand({
       Bucket: process.env.AWS_BUCKET!,
-      Key: `${process.env.AWS_FOLDER}/${key}`,
+      Key: key,
       Range: range
     });
 

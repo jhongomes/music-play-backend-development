@@ -12,6 +12,8 @@ import { UploadAbortInterceptor } from "lib/src/interceptor/abort-upload-interce
 import { GetMusicDto } from "lib/src/dto/apps/music/get-music.dtos";
 import { ResponseGetMusicDto } from "lib/src/dto/apps/music/response-get-music.dto";
 import { UploadEnum } from "lib/src/enum/upload.enum";
+import { RedisPubSubService } from "config/redis/ioredis/redis-pubsub.service";
+import { randomUUID } from "crypto";
 
 @ApiTags('Music')
 @Controller('music')
@@ -22,7 +24,10 @@ import { UploadEnum } from "lib/src/enum/upload.enum";
     required: true
 })
 export class MusicController {
-    constructor(private readonly musicService: MusicService) {}
+    constructor(
+        private readonly musicService: MusicService,
+        private readonly redisPubSub: RedisPubSubService
+    ) {}
 
     @Post()
     @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidUnknownValues: true }))
@@ -46,7 +51,16 @@ export class MusicController {
     @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error occurred. A message explaining will be notified.' })
     @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
     async createFileMusic(@Req() req: Request): Promise<string> {
-        const { stream, filename, mimetype } = await handleMultipartStream(req);
+        const uploadId = randomUUID();
+
+        const { stream, filename, mimetype } =
+            await handleMultipartStream(req, progress => {
+                this.redisPubSub.pub.publish(
+                    `upload:${uploadId}`,
+                    JSON.stringify(progress),
+                );
+            });
+
         return this.musicService.createFileMusic(stream, filename, mimetype, UploadEnum.MUSIC);
     }
 

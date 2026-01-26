@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, Req, Res, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query, Req, Res, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiOkResponse, ApiQuery, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { MusicService } from "./music.service";
@@ -14,6 +14,9 @@ import { ResponseGetMusicDto } from "lib/src/dto/apps/music/response-get-music.d
 import { UploadEnum } from "lib/src/enum/upload.enum";
 import { RedisPubSubService } from "config/redis/ioredis/redis-pubsub.service";
 import { randomUUID } from "crypto";
+import { UploadValidateInterceptor } from "lib/src/interceptor/validation-image-uploads.interceptor";
+import { UploadKindMeta } from "lib/src/decorators/upload-kind.decorator";
+import { UploadKind } from "lib/src/enum/upload-kind.enum";
 
 @ApiTags('Music')
 @Controller('music')
@@ -45,7 +48,11 @@ export class MusicController {
     }
 
     @Post('/upload')
-    @UseInterceptors(UploadAbortInterceptor)
+    @UploadKindMeta(UploadKind.AUDIO)
+    @UseInterceptors(
+        UploadAbortInterceptor,
+        UploadValidateInterceptor
+    )
     @ApiCreatedResponse({ type: ResponseTypeDto, description: 'Successfull operation, file received.' })
     @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error occurred. A message explaining will be notified.' })
     @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error occurred. A message explaining will be notified.' })
@@ -63,6 +70,37 @@ export class MusicController {
 
         return this.musicService.createFileMusic(stream, filename, mimetype, UploadEnum.MUSIC);
     }
+
+    @Patch('/cover/:id')
+    @UploadKindMeta(UploadKind.COVER)
+    @UseInterceptors(
+        UploadAbortInterceptor,
+        UploadValidateInterceptor
+    )
+    @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error occurred. A message explaining will be notified.' })
+    @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error occurred. A message explaining will be notified.' })
+    @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
+    async createCoverMusic(@Param('id') musicId: string, @Req() req: Request): Promise<string> {
+        const uploadId = randomUUID();
+
+        const { stream, filename, mimetype } =
+            await handleMultipartStream(req, progress => {
+                this.redisPubSub.pub.publish(
+                    `upload:${uploadId}`,
+                    JSON.stringify(progress),
+                );
+            });
+
+        const coverUrl = await this.musicService.createCoverMusic(
+            musicId,
+            stream,
+            filename,
+            mimetype,
+        );
+
+        return coverUrl;
+    }
+
 
     @Post('/bulk')
     @UsePipes(EmptyArrayValidationPipe)

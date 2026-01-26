@@ -6,6 +6,7 @@ import { ProfileRepository } from 'apps/src/profile/repository/profile.repositor
 import { AlbumRepository } from 'apps/src/album/repository/album.repository';
 import { ArtistRepository } from 'apps/src/artist/repository/artist.repository';
 import { MusicRepository } from 'apps/src/music/repository/music.repository';
+import { PlaylistRepository } from 'apps/src/playlist/repository/playlist.repository';
 
 @Injectable()
 export class TypeOrmRepositoryConfig {
@@ -15,7 +16,8 @@ export class TypeOrmRepositoryConfig {
             [Repository.PROFILE]: () => [ProfileRepository],
             [Repository.ALBUM]: () => [AlbumRepository],
             [Repository.ARTIST]: () => [ArtistRepository],
-            [Repository.MUSIC]: () => [MusicRepository]
+            [Repository.MUSIC]: () => [MusicRepository],
+            [Repository.PLAYLIST]: () => [PlaylistRepository]
         }
 
         return repositoriesOf[repositories]();

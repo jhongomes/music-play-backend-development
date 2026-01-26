@@ -10,6 +10,7 @@ import { ArtistModule } from './artist/artist.module';
 import { MusicModule } from './music/music.module';
 import { UploadModule } from 'config/storage/storage.module';
 import { RedisPubSubModule } from 'config/redis/ioredis/redis-pubsub.module';
+import { PlayListModule } from './playlist/playlist.module';
 @Global()
 @Module({
     imports: [
@@ -22,7 +23,8 @@ import { RedisPubSubModule } from 'config/redis/ioredis/redis-pubsub.module';
         ProfileModule,
         AlbumModule,
         ArtistModule,
-        MusicModule
+        MusicModule,
+        PlayListModule
     ],
     exports: [AuthModule, ConfigModule, UploadModule],
     providers: [],

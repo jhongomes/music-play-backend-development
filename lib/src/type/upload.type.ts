@@ -8,7 +8,7 @@ export const UPLOAD_PROFILES = {
   },
   [UploadEnum.COVER]: {
     folder: process.env.AWS_FOLDER_COVER,
-    maxSizeMB: 5,
+    maxSizeMB: 5*1024*1024,
     queueSize: 4
   },
   [UploadEnum.VIDEO]: {

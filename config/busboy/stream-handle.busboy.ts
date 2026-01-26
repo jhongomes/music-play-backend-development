@@ -1,3 +1,4 @@
+import { BadRequestException } from '@nestjs/common';
 import Busboy from 'busboy';
 import { Request } from 'express';
 import { PassThrough } from 'stream';
@@ -39,6 +40,19 @@ export function handleMultipartStream(req: Request, onProgress?: (payload: Progr
 
     busboy.on('file', (_field, file, info) => {
       const { filename, mimeType } = info;
+      const kind = (req as any).uploadKind;
+
+      const rules = {
+        audio: ['audio/mpeg', 'audio/mp3', 'audio/mp4'],
+        cover: ['image/jpeg', 'image/png'],
+      };
+
+      if (!rules[kind]?.includes(mimeType)) {
+        passThrough.destroy();
+        file.resume();
+        reject(new BadRequestException('Invalid file type'));
+        return;
+      }
 
       file.pipe(passThrough);
 

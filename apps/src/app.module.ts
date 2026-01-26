@@ -9,11 +9,13 @@ import { AlbumModule } from './album/album.module';
 import { ArtistModule } from './artist/artist.module';
 import { MusicModule } from './music/music.module';
 import { UploadModule } from 'config/storage/storage.module';
+import { RedisPubSubModule } from 'config/redis/ioredis/redis-pubsub.module';
 @Global()
 @Module({
     imports: [
         ConfigModule.forRoot(),
         TypeOrmModule.forRootAsync({ useClass: TypeOrmConfig }),
+        RedisPubSubModule,
         UploadModule,
         UserModule,
         AuthModule,

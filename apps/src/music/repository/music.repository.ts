@@ -3,7 +3,7 @@ import { Music } from "../entity/music.entity";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { InsertOneResult, ObjectId } from "mongodb";
 import { CreateMusicDto } from "../../../../lib/src/dto/apps/music/create-music.dto";
-import { HttpException, HttpStatus, Logger } from "@nestjs/common";
+import { Logger } from "@nestjs/common";
 import { GetMusicDto } from "lib/src/dto/apps/music/get-music.dtos";
 import { ResponseGetMusicDto } from "lib/src/dto/apps/music/response-get-music.dto";
 
@@ -119,5 +119,9 @@ export class MusicRepository {
                 totalFound
             }
         };
+    }
+
+    async updateCoverMusic(id: string, cover_art: string) {
+        return await this.repository.updateOne({ _id: new ObjectId(id) }, { $set: { cover_art } });
     }
 }

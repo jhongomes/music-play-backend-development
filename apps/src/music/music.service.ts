@@ -55,9 +55,6 @@ export class MusicService {
     }
 
     async createFileMusic(stream: PassThrough, filename: string, mimetype: string, uploadEnum: UploadEnum): Promise<string> {
-        if (!mimetype.startsWith('audio/') && !mimetype.startsWith('video/')) {
-            throw new BadRequestException('The file must be audio or video');
-        }
         return this.uploadService.uploadToS3(stream, filename, mimetype, uploadEnum);
     }
 
@@ -77,5 +74,21 @@ export class MusicService {
 
     async getMusicsList(query: GetMusicDto): Promise<ResponseGetMusicDto> {
         return this.musicRepository.getMusicsList(query);
+    }
+
+    async createCoverMusic(musicId: string, stream: PassThrough, filename: string, mimetype: string): Promise<string> {
+        const uploadUrl = await this.uploadService.uploadToS3(stream, filename, mimetype, UploadEnum.COVER);
+
+        const uploadedCover = await this.musicRepository.updateCoverMusic(musicId, uploadUrl);
+
+        if (!uploadedCover)
+            throw new HttpException(
+                'An error occurred while updating the cover URL',
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+
+        Logger.log(`Cover Url was successfully updated - Music Id: [${musicId}]`, 'CreateCoverMusic');
+
+        return uploadUrl;
     }
 }

@@ -5,6 +5,7 @@ import { Repository } from "lib/src/enum/repositories.enum";
 import { PlaylistService } from "./playlist.service";
 import { PlaylistRepository } from "./repository/playlist.repository";
 import { PlaylistController } from "./playlist.controller";
+import { PlaylistMusicRepository } from "./repository/playlist-music.repository";
 
 
 @Module({
@@ -12,7 +13,7 @@ import { PlaylistController } from "./playlist.controller";
         TypeOrmModule.forFeature(TypeOrmRepositoryConfig.getRepositoryOf(Repository.PLAYLIST))
     ],
     controllers: [PlaylistController],
-    providers: [PlaylistService, PlaylistRepository],
+    providers: [PlaylistService, PlaylistRepository, PlaylistMusicRepository],
     exports: [PlaylistService]
 })
 export class PlayListModule {}

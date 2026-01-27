@@ -3,6 +3,7 @@ import { EntityClassOrSchema } from "@nestjs/typeorm/dist/interfaces/entity-clas
 import { Album } from "apps/src/album/entity/album.entity";
 import { Artist } from "apps/src/artist/entity/artist.entity";
 import { Music } from "apps/src/music/entity/music.entity";
+import { PlaylistMusic } from "apps/src/playlist/entity/playlist-music.entity";
 import { Playlist } from "apps/src/playlist/entity/playlist.entity";
 import { Profile } from "apps/src/profile/entity/profile.entity";
 import { User } from "apps/src/user/entity/user.entity";
@@ -17,7 +18,8 @@ export class TypeormEntityConfig {
             [Entitie.PROFILE]: () => [Profile],
             [Entitie.ALBUM]: () => [Album],
             [Entitie.ARTIST]: () => [Artist],
-            [Entitie.PLAYLIST]: () => [Playlist]
+            [Entitie.PLAYLIST]: () => [Playlist],
+            [Entitie.PLAYLISTMUSIC]: () => [PlaylistMusic]
         };
 
         return entitiesOf[entities]();

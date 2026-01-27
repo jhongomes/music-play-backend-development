@@ -4,5 +4,6 @@ export enum Repository {
     PROFILE = 'profile',
     ALBUM = 'album',
     ARTIST = 'artist',
-    PLAYLIST = 'playlist'
+    PLAYLIST = 'playlist',
+    PLAYLISTMUSIC = 'playlistmusic'
 }

@@ -26,7 +26,7 @@ export class CreatePlaylistDto {
 
     @ApiProperty({ type: 'string' })
     @IsString()
-    owner_id: string | ObjectId;
+    owner_id: string;
 
     @ApiProperty({ type: 'number' })
     created_at: number;

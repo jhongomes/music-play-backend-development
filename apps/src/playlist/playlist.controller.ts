@@ -1,6 +1,6 @@
-import { Body, Controller, Param, Post, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiOkResponse, ApiQuery, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { PlaylistService } from "./playlist.service";
 import { ResponseTypeDto } from "lib/src/general";
 import { Playlist } from "./entity/playlist.entity";
@@ -8,6 +8,8 @@ import { CreatePlaylistDto } from "lib/src/dto/apps/playlist/create-playlist.dto
 import { PlaylistMusic } from "./entity/playlist-music.entity";
 import { AddMusicToPlaylistDto } from "lib/src/dto/apps/playlist/add-music-to-playlist.dto";
 import { InsertOneResult } from "mongodb";
+import { ResponseGetPlaylistDto } from "lib/src/dto/apps/playlist/response-get-playlist.dto";
+import { GetPlayListDto } from "lib/src/dto/apps/playlist/get-playlist.dtos";
 
 @ApiTags('Playlist')
 @Controller('playlist')
@@ -49,4 +51,27 @@ export class PlaylistController {
             throw error;
         }
     }
+
+    @Get('/detail/:id')
+    @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidUnknownValues: true }))
+    @ApiOkResponse({ type: ResponseGetPlaylistDto, description: 'Song(s) found.' })
+    @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
+    async getPlayListDetail(@Param() playlist_id: string): Promise<ResponseGetPlaylistDto[]> {
+        return this.playlistService.getPlayListDetail(playlist_id);
+    }
+
+    @Get('/list')
+    @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidUnknownValues: true }))
+    @ApiQuery({ type: GetPlayListDto })
+    @ApiOkResponse({ type: ResponseGetPlaylistDto, description: 'Song(s) found.' })
+    @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
+    async getAllPlayList(@Query() query: GetPlayListDto): Promise<ResponseGetPlaylistDto> {
+        return this.playlistService.getAllPlayList(query);
+    }
+
+
 }

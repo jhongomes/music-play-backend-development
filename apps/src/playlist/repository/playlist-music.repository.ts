@@ -11,12 +11,12 @@ export class PlaylistMusicRepository {
         this.repository = this.dataSource.getMongoRepository(PlaylistMusic);
     }
 
-    async findByOnePlaylist(playlist_id: string): Promise<any> {
-        return ((await this.repository.find({ playlist_id: playlist_id })).sort(order => order.order - 1));
+    async findByOnePlaylist(playlist_id: string): Promise<PlaylistMusic[]> {
+        return ((await this.repository.find({ playlist_id: new ObjectId(playlist_id )})).sort());
     }
 
     async AddMusicToPlaylist(playlist_id: string, music_id: AddMusicToPlaylistDto, order: number): Promise<InsertOneResult> {
-        const musicPlayListAlreadyExists = await this.repository.count({ playlist_id: playlist_id, music_id: new ObjectId(music_id.music_id) });
+        const musicPlayListAlreadyExists = await this.repository.count({ playlist_id: new ObjectId(playlist_id), music_id: new ObjectId(music_id.music_id) });
 
         if (musicPlayListAlreadyExists)
             throw new HttpException(
@@ -24,6 +24,6 @@ export class PlaylistMusicRepository {
                 HttpStatus.BAD_REQUEST
             );
 
-        return this.repository.insertOne({ playlist_id: playlist_id, music_id: new ObjectId(music_id.music_id), order: order, added_at: Date.now() });
+        return this.repository.insertOne({ playlist_id: new ObjectId(playlist_id), music_id: new ObjectId(music_id.music_id), order: order, added_at: Date.now() });
     }
 }

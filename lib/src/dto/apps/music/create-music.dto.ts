@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, MaxLength } from "class-validator";
 import { ObjectId } from "mongodb";
 
 export class CreateMusicDto {
-    @ApiProperty({ type: 'string', maxLength: 30 })
+    @ApiProperty({ type: 'string', maxLength: 200 })
     @IsNotEmpty()
     @IsString()
     @MaxLength(200)

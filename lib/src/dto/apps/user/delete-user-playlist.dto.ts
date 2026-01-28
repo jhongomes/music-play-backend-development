@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class CreateUserPlayListDto {
+export class DeleteUserPlayListDto {
     @ApiProperty({ type: 'string' })
     @IsString()
     @IsNotEmpty()
@@ -11,10 +11,4 @@ export class CreateUserPlayListDto {
     @IsString()
     @IsNotEmpty()
     playlist_id: string;
-
-    @ApiProperty({ type: 'number' })
-    created_at: number;
-
-    @ApiProperty({ type: 'number' })
-    updated_at: number;
 }

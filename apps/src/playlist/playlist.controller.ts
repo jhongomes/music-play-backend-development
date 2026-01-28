@@ -75,7 +75,6 @@ export class PlaylistController {
 
     @Delete('/:id')
     @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidUnknownValues: true }))
-    @ApiCreatedResponse({ type: PlaylistMusic, description: 'The PlaylistMusic has been successfully created.' })
     @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
     @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
     @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })

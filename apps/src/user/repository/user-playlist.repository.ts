@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { DataSource, MongoRepository } from "typeorm";
 import { InjectDataSource } from "@nestjs/typeorm";
-import { InsertOneResult, ObjectId } from 'mongodb';
+import { DeleteResult, InsertOneResult, ObjectId } from 'mongodb';
 import { UserPlaylist } from '../entity/user-playlist.entity';
 import { CreateUserPlayListDto } from "lib/src/dto/apps/user/create-user-playlist.dto";
+import { DeleteUserPlayListDto } from "lib/src/dto/apps/user/delete-user-playlist.dto";
 
 @Injectable()
 export class UserPlayListRepository {
@@ -28,5 +29,9 @@ export class UserPlayListRepository {
             createad_at: Date.now(),
             updated_at: Date.now(),
         });
+    }
+
+    async deleteUserPlayList(data: DeleteUserPlayListDto): Promise<DeleteResult> {
+        return await this.repository.deleteOne({ user_id: new ObjectId(data.user_id), playlist_id: new ObjectId(data.playlist_id) });
     }
 } 

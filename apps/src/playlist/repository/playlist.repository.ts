@@ -1,7 +1,7 @@
 import { DataSource, MongoRepository } from "typeorm";
 import { Playlist } from "../entity/playlist.entity";
 import { InjectDataSource } from "@nestjs/typeorm";
-import { InsertOneResult, ObjectId } from "mongodb";
+import { DeleteResult, InsertOneResult, ObjectId } from "mongodb";
 import { CreatePlaylistDto } from "lib/src/dto/apps/playlist/create-playlist.dto";
 import { HttpException, HttpStatus } from "@nestjs/common";
 import { ResponseGetPlaylistDto } from "lib/src/dto/apps/playlist/response-get-playlist.dto";
@@ -152,5 +152,13 @@ export class PlaylistRepository {
         ]).toArray();
 
         return playList
+    }
+
+    async deletePlayList(playlist_id: string): Promise<DeleteResult> {
+        return this.repository.deleteOne({ _id: new ObjectId(playlist_id) });
+    }
+
+    async countPlayList(playlist_id: string): Promise<number> {
+        return this.repository.count({ _id: new ObjectId(playlist_id) });
     }
 }

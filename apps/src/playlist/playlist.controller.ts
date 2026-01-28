@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Query, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiOkResponse, ApiQuery, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { PlaylistService } from "./playlist.service";
@@ -73,5 +73,13 @@ export class PlaylistController {
         return this.playlistService.getAllPlayList(query);
     }
 
-
+    @Delete('/:id')
+    @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidUnknownValues: true }))
+    @ApiCreatedResponse({ type: PlaylistMusic, description: 'The PlaylistMusic has been successfully created.' })
+    @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
+    async deletePlayList(@Param('id') playlist_id: string): Promise<ResponseTypeDto> {
+        return this.playlistService.deletePlayList(playlist_id);
+    }
 }

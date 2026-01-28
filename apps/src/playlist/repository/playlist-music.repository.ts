@@ -1,7 +1,7 @@
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource, MongoRepository } from "typeorm";
 import { PlaylistMusic } from "../entity/playlist-music.entity";
-import { InsertOneResult, ObjectId } from "mongodb";
+import { DeleteResult, InsertOneResult, ObjectId } from "mongodb";
 import { AddMusicToPlaylistDto } from "lib/src/dto/apps/playlist/add-music-to-playlist.dto";
 import { HttpException, HttpStatus } from "@nestjs/common";
 
@@ -12,7 +12,7 @@ export class PlaylistMusicRepository {
     }
 
     async findByOnePlaylist(playlist_id: string): Promise<PlaylistMusic[]> {
-        return ((await this.repository.find({ playlist_id: new ObjectId(playlist_id )})).sort());
+        return ((await this.repository.find({ playlist_id: new ObjectId(playlist_id) })).sort());
     }
 
     async AddMusicToPlaylist(playlist_id: string, music_id: AddMusicToPlaylistDto, order: number): Promise<InsertOneResult> {
@@ -25,5 +25,9 @@ export class PlaylistMusicRepository {
             );
 
         return this.repository.insertOne({ playlist_id: new ObjectId(playlist_id), music_id: new ObjectId(music_id.music_id), order: order, added_at: Date.now() });
+    }
+
+    async deleteMusicsPlayList(playlist_id: string): Promise<DeleteResult> {
+        return this.repository.deleteMany({ playlist_id: new ObjectId(playlist_id) });
     }
 }

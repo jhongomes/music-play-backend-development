@@ -12,7 +12,7 @@ import { GetPlayListDto } from "lib/src/dto/apps/playlist/get-playlist.dtos";
 export class PlaylistService {
     constructor(
         private readonly playlistRepository: PlaylistRepository,
-        private readonly playListMusicRepository: PlaylistMusicRepository) {}
+        private readonly playListMusicRepository: PlaylistMusicRepository) { }
 
     async createPlayList(data: CreatePlaylistDto): Promise<ResponseTypeDto> {
         const createdPlaylist = await this.playlistRepository.createPlaylist(data);
@@ -60,5 +60,40 @@ export class PlaylistService {
 
     async getPlayListDetail(playlist_id: string): Promise<ResponseGetPlaylistDto[]> {
         return this.playlistRepository.getPlayListDetail(playlist_id);
+    }
+
+    async deletePlayList(playlist_id: string): Promise<ResponseTypeDto> {
+        const foundPlayList = await this.playlistRepository.countPlayList(playlist_id);
+
+        if (!foundPlayList)
+            throw new HttpException(
+                `Not found PlayList [${playlist_id}]`,
+                HttpStatus.NOT_FOUND
+            );
+
+        const { acknowledged, deletedCount } = await this.playListMusicRepository.deleteMusicsPlayList(playlist_id);
+
+        if (!acknowledged && deletedCount === 0)
+            throw new HttpException(
+                `Ocorred on error to delete music from the PlayList [${playlist_id}]`,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+
+        Logger.log(`Musics from the playlist ${playlist_id} was successfully deleted.`, 'DeletePlayListMusic');
+
+        const deletePlayList = await this.playlistRepository.deletePlayList(playlist_id);
+
+        if (!deletePlayList.acknowledged && deletePlayList.deletedCount === 0)
+            throw new HttpException(
+                `Ocorred on error to delete the PlayList [${playlist_id}]`,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+
+        Logger.log(`PlayList [${playlist_id}] was successfully deleted`, 'DeletePlayList');
+
+        return {
+            statusCode: HttpStatus.OK,
+            message: 'PlayList was successfully deleted'
+        }
     }
 }

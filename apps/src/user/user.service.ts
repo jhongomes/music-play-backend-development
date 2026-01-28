@@ -6,13 +6,14 @@ import { ResponseTypeDto } from "lib/src/general";
 import { ProfileService } from "../profile/profile.service";
 import { UserPlayListRepository } from "./repository/user-playlist.repository";
 import { CreateUserPlayListDto } from "lib/src/dto/apps/user/create-user-playlist.dto";
+import { DeleteUserPlayListDto } from "lib/src/dto/apps/user/delete-user-playlist.dto";
 
 @Injectable()
 export class UserService {
    constructor(
       private readonly userRepository: UserRepository,
       private readonly profileService: ProfileService,
-      private readonly userPlayListRepository: UserPlayListRepository) {}
+      private readonly userPlayListRepository: UserPlayListRepository) { }
 
    async createUser(data: CreateNewUserDto): Promise<ResponseTypeDto> {
       const userCreated = await this.userRepository.createUser(data);
@@ -51,6 +52,23 @@ export class UserService {
       return {
          statusCode: HttpStatus.CREATED,
          message: 'User PlayList created successfully'
+      }
+   }
+
+   async deleteUserPlayList(data: DeleteUserPlayListDto): Promise<ResponseTypeDto> {
+      const { deletedCount, acknowledged } = await this.userPlayListRepository.deleteUserPlayList(data);
+
+      if (!acknowledged && deletedCount === 0)
+         throw new HttpException(
+            `An error occurred to delete the user PlayList [${data.playlist_id}] for the user [${data.user_id}]`,
+            HttpStatus.INTERNAL_SERVER_ERROR
+         )
+
+      Logger.log(`User PlayList [${data.playlist_id}] was deleted successfully`, 'deleteUserPlayList');
+
+      return {
+         statusCode: HttpStatus.OK,
+         message: 'User PlayList deleted successfully'
       }
    }
 } 

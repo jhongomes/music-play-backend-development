@@ -6,6 +6,7 @@ import { Music } from "apps/src/music/entity/music.entity";
 import { PlaylistMusic } from "apps/src/playlist/entity/playlist-music.entity";
 import { Playlist } from "apps/src/playlist/entity/playlist.entity";
 import { Profile } from "apps/src/profile/entity/profile.entity";
+import { UserPlaylist } from "apps/src/user/entity/user-playlist.entity";
 import { User } from "apps/src/user/entity/user.entity";
 import { Entitie } from "lib/src/enum/entities.enum";
 
@@ -19,7 +20,8 @@ export class TypeormEntityConfig {
             [Entitie.ALBUM]: () => [Album],
             [Entitie.ARTIST]: () => [Artist],
             [Entitie.PLAYLIST]: () => [Playlist],
-            [Entitie.PLAYLISTMUSIC]: () => [PlaylistMusic]
+            [Entitie.PLAYLIST_MUSIC]: () => [PlaylistMusic],
+            [Entitie.USER_PLAYLIST]: () => [UserPlaylist]
         };
 
         return entitiesOf[entities]();

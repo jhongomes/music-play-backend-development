@@ -7,6 +7,7 @@ import { HttpModule } from '@nestjs/axios';
 import { Repository } from 'lib/src/enum/repositories.enum';
 import { UserRepository } from './repository/user.repository';
 import { ProfileModule } from '../profile/profile.module';
+import { UserPlayListRepository } from './repository/user-playlist.repository';
 
 @Module({
     imports: [
@@ -15,7 +16,7 @@ import { ProfileModule } from '../profile/profile.module';
         ProfileModule
     ],
     controllers: [UserController],
-    providers: [UserService, UserRepository],
+    providers: [UserService, UserRepository, UserPlayListRepository],
     exports: [UserService, UserRepository]
 })
 export class UserModule {}

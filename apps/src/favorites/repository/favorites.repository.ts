@@ -1,8 +1,9 @@
 import { DataSource, MongoRepository } from "typeorm";
 import { Favorites } from "../entity/favorites.entity";
 import { InjectDataSource } from "@nestjs/typeorm";
-import { InsertOneResult, ObjectId } from "mongodb";
+import { DeleteResult, InsertOneResult, ObjectId } from "mongodb";
 import { CreateFavoriteMusicDto } from "lib/src/dto/favorites/create-music-favorite.dto";
+import { DeleteFavoriteMusicDto } from "lib/src/dto/favorites/delete-music-favorite.dto";
 
 export class FavoritesRepository {
     private readonly repository: MongoRepository<Favorites>
@@ -22,5 +23,9 @@ export class FavoritesRepository {
 
     async countFavorites(data: CreateFavoriteMusicDto): Promise<number> {
         return await this.repository.count({ user_id: new ObjectId(data.user_id), music_id: new ObjectId(data.music_id) });
+    }
+
+    async deleteMusicFavorites(data: DeleteFavoriteMusicDto): Promise<DeleteResult> {
+        return await this.repository.deleteOne({ user_id: new ObjectId(data.user_id), music_id: new ObjectId(data.music_id) });
     }
 }

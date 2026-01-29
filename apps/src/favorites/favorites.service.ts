@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable, Logger } from "@nestjs/common";
 import { ResponseTypeDto } from "lib/src/general";
 import { FavoritesRepository } from "./repository/favorites.repository";
 import { CreateFavoriteMusicDto } from "lib/src/dto/favorites/create-music-favorite.dto";
+import { DeleteFavoriteMusicDto } from "lib/src/dto/favorites/delete-music-favorite.dto";
 
 @Injectable()
 export class FavoritesService {
@@ -29,6 +30,23 @@ export class FavoritesService {
         return {
             statusCode: HttpStatus.CREATED,
             message: 'Favorite Music was successfully created'
+        }
+    }
+
+    async deleteMusicFavorites(data: DeleteFavoriteMusicDto): Promise<ResponseTypeDto> {
+        const { deletedCount, acknowledged } = await this.favoritesRepository.deleteMusicFavorites(data);
+
+        if (!acknowledged && deletedCount === 0)
+            throw new HttpException(
+                `An error occurred to delete the favorite music [${data.music_id}] for the user [${data.user_id}]`,
+                HttpStatus.INTERNAL_SERVER_ERROR
+            )
+
+        Logger.log(`Favorite music [${data.music_id}] was deleted successfully`, 'DeleteMusicFavorites');
+
+        return {
+            statusCode: HttpStatus.OK,
+            message: 'Favorite Music deleted successfully'
         }
     }
 }

@@ -9,6 +9,7 @@ import { MusicRepository } from 'apps/src/music/repository/music.repository';
 import { PlaylistRepository } from 'apps/src/playlist/repository/playlist.repository';
 import { PlaylistMusicRepository } from 'apps/src/playlist/repository/playlist-music.repository';
 import { UserPlayListRepository } from 'apps/src/user/repository/user-playlist.repository';
+import { FavoritesRepository } from 'apps/src/favorites/repository/favorites.repository';
 
 @Injectable()
 export class TypeOrmRepositoryConfig {
@@ -21,7 +22,8 @@ export class TypeOrmRepositoryConfig {
             [Repository.MUSIC]: () => [MusicRepository],
             [Repository.PLAYLIST]: () => [PlaylistRepository],
             [Repository.PLAYLIST_MUSIC]: () => [PlaylistMusicRepository],
-            [Repository.USER_PLAYLIST]: () => [UserPlayListRepository]
+            [Repository.USER_PLAYLIST]: () => [UserPlayListRepository],
+            [Repository.FAVORITES]: () => [FavoritesRepository]
         }
 
         return repositoriesOf[repositories]();

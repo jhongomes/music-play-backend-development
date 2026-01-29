@@ -26,7 +26,8 @@ export class TypeOrmConfig implements TypeOrmOptionsFactory {
                 ...TypeormEntityConfig.getEntitiesOf(Entitie.ARTIST),
                 ...TypeormEntityConfig.getEntitiesOf(Entitie.PLAYLIST),
                 ...TypeormEntityConfig.getEntitiesOf(Entitie.PLAYLIST_MUSIC),
-                ...TypeormEntityConfig.getEntitiesOf(Entitie.USER_PLAYLIST)
+                ...TypeormEntityConfig.getEntitiesOf(Entitie.USER_PLAYLIST),
+                ...TypeormEntityConfig.getEntitiesOf(Entitie.FAVORITES)
             ]
         };
     }

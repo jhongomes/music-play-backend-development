@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { EntityClassOrSchema } from "@nestjs/typeorm/dist/interfaces/entity-class-or-schema.type";
 import { Album } from "apps/src/album/entity/album.entity";
 import { Artist } from "apps/src/artist/entity/artist.entity";
+import { Favorites } from "apps/src/favorites/entity/favorites.entity";
 import { Music } from "apps/src/music/entity/music.entity";
 import { PlaylistMusic } from "apps/src/playlist/entity/playlist-music.entity";
 import { Playlist } from "apps/src/playlist/entity/playlist.entity";
@@ -19,6 +20,7 @@ export class TypeormEntityConfig {
             [Entitie.PROFILE]: () => [Profile],
             [Entitie.ALBUM]: () => [Album],
             [Entitie.ARTIST]: () => [Artist],
+            [Entitie.FAVORITES]: () => [Favorites],
             [Entitie.PLAYLIST]: () => [Playlist],
             [Entitie.PLAYLIST_MUSIC]: () => [PlaylistMusic],
             [Entitie.USER_PLAYLIST]: () => [UserPlaylist]

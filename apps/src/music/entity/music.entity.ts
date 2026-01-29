@@ -4,7 +4,7 @@ import { BaseEntity, Column, Entity, Index, ObjectIdColumn } from "typeorm";
 @Index(["genre", "artist_id", "album_id", "user_id"], { background: true })
 @Entity()
 export class Music extends BaseEntity {
-    @ApiProperty({ type: 'string', required: true })
+    @ApiProperty({ type: 'string' })
     @ObjectIdColumn()
     _id: string;
 

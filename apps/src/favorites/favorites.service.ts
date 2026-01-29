@@ -3,6 +3,8 @@ import { ResponseTypeDto } from "lib/src/general";
 import { FavoritesRepository } from "./repository/favorites.repository";
 import { CreateFavoriteMusicDto } from "lib/src/dto/favorites/create-music-favorite.dto";
 import { DeleteFavoriteMusicDto } from "lib/src/dto/favorites/delete-music-favorite.dto";
+import { GetFavoritesDto } from "lib/src/dto/favorites/get-favorites.dtos";
+import { ResponseFavoritesDto } from "lib/src/dto/favorites/response-get-favorites.dto";
 
 @Injectable()
 export class FavoritesService {
@@ -48,5 +50,9 @@ export class FavoritesService {
             statusCode: HttpStatus.OK,
             message: 'Favorite Music deleted successfully'
         }
+    }
+
+    async getMusicFavorites(query: GetFavoritesDto): Promise<ResponseFavoritesDto> {
+        return this.favoritesRepository.getMusicFavorites(query);
     }
 }

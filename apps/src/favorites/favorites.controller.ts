@@ -1,11 +1,13 @@
-import { Body, Controller, Delete, Post, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Post, Query, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
+import { ApiBadRequestResponse, ApiBody, ApiCreatedResponse, ApiHeader, ApiInternalServerErrorResponse, ApiOkResponse, ApiQuery, ApiTags, ApiUnauthorizedResponse } from "@nestjs/swagger";
 import { ResponseTypeDto } from "lib/src/general";
 import { Favorites } from "./entity/favorites.entity";
 import { FavoritesService } from "./favorites.service";
 import { CreateFavoriteMusicDto } from "lib/src/dto/favorites/create-music-favorite.dto";
 import { DeleteFavoriteMusicDto } from "lib/src/dto/favorites/delete-music-favorite.dto";
+import { GetFavoritesDto } from "lib/src/dto/favorites/get-favorites.dtos";
+import { ResponseFavoritesDto } from "lib/src/dto/favorites/response-get-favorites.dto";
 
 @ApiTags('Favorites')
 @Controller('favorites')
@@ -40,5 +42,16 @@ export class FavoritesController {
     @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
     async deleteMusicFavorites(@Body() data: DeleteFavoriteMusicDto): Promise<ResponseTypeDto> {
         return this.favoritesService.deleteMusicFavorites(data);
+    }
+
+    @Get('/list')
+    @UsePipes(new ValidationPipe({ transform: true, whitelist: true, forbidUnknownValues: true }))
+    @ApiQuery({ type: GetFavoritesDto })
+    @ApiOkResponse({ type: ResponseFavoritesDto, description: 'Song(s) found.' })
+    @ApiBadRequestResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiInternalServerErrorResponse({ type: ResponseTypeDto, description: 'An error ocurred. A message explaining will be notified.' })
+    @ApiUnauthorizedResponse({ type: ResponseTypeDto, description: 'Unauthorized' })
+    async getMusicFavorites(@Query() query: GetFavoritesDto): Promise<ResponseFavoritesDto> {
+        return this.favoritesService.getMusicFavorites(query);
     }
 }

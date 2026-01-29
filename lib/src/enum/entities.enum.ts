@@ -6,5 +6,6 @@ export enum Entitie {
     ARTIST = 'artist',
     PLAYLIST = 'playlist',
     PLAYLIST_MUSIC = 'playlist_music',
-    USER_PLAYLIST = 'user_playlist'
+    USER_PLAYLIST = 'user_playlist',
+    FAVORITES = 'favorites'
 }

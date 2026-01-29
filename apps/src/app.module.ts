@@ -11,6 +11,7 @@ import { MusicModule } from './music/music.module';
 import { UploadModule } from 'config/storage/storage.module';
 import { RedisPubSubModule } from 'config/redis/ioredis/redis-pubsub.module';
 import { PlayListModule } from './playlist/playlist.module';
+import { FavoritesModule } from './favorites/favorites.module';
 @Global()
 @Module({
     imports: [
@@ -24,7 +25,8 @@ import { PlayListModule } from './playlist/playlist.module';
         AlbumModule,
         ArtistModule,
         MusicModule,
-        PlayListModule
+        PlayListModule,
+        FavoritesModule
     ],
     exports: [AuthModule, ConfigModule, UploadModule],
     providers: [],
